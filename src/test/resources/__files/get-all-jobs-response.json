@@ -1,0 +1,12 @@
+[
+  {
+    "jobName": "testJob",
+    "jobGroup": "testGroup",
+    "cronExpression": "0/5 * * * * ?",
+    "jobStatus": "NOT_STARTED",
+    "responseQueueInfo": {
+      "exchangeName": "testExchange",
+      "routingKey": "testRoutingKey"
+    }
+  }
+]

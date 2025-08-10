@@ -1,0 +1,5 @@
+{
+  "jobName": "Test Job",
+  "jobGroup": "Test Group",
+  "actionType": "RUN_ONCE"
+}

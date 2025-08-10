@@ -1,0 +1,22 @@
+services:
+  db_scheduler:
+    container_name: db_scheduler
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db_scheduler
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  sonarqube:
+    image: sonarqube:10-community
+    ports:
+      - "9000:9000"

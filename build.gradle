@@ -1,0 +1,89 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'groovy'
+    id 'org.springframework.boot' version "${springBootVersion}"
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+}
+
+group = 'com.company'
+version = '0.1'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.9'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // spring framework's libs
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${webmvcUiVersion}"
+    implementation "net.ttddyy.observation:datasource-micrometer-spring-boot:${datasourceMicrometerVersion}"
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation "commons-io:commons-io:${commonsIoVersion}"
+    implementation "commons-fileupload:commons-fileupload:${commonsFileUploadVersion}"
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackVersion}"
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // quartz
+    implementation 'org.springframework.boot:spring-boot-starter-quartz'
+
+    // db related
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    // liquibase
+    implementation 'org.liquibase:liquibase-core'
+
+    // rabbitmq
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+
+    // Feign dependency for inter-service HTTP calls
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign:${openFeignVersion}"
+    implementation "io.github.openfeign:feign-okhttp:${openFeignOkHttpVersion}"
+
+    // test
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.tngtech.archunit:archunit-junit5:${archUnitVersion}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation "org.spockframework:spock-core:${spockVersion}"
+    testImplementation "org.spockframework:spock-spring:${spockVersion}"
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "PASSED", "FAILED", "SKIPPED"
+    }
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}

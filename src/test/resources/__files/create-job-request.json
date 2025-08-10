@@ -1,0 +1,12 @@
+{
+  "jobName": "testJob",
+  "jobGroup": "testGroup",
+  "cronExpression": "0/5 * * * * ?",
+  "responseQueueInfo": {
+    "exchangeName": "testExchange",
+    "routingKey": "testRoutingKey"
+  },
+  "payload": {
+     "key1": "value1"
+  }
+}

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001_quartz_tables
+      author: Mahammad Eminov
+      dbms: h2
+      changes:
+        - sqlFile:
+            path: liquibase/changelog/sql/quartz_tables.sql
+            encoding: utf8
+            splitStatements: true
+            stripComments: true
