@@ -22,7 +22,7 @@ A Spring Boot microservice for scheduling and managing jobs using Quartz.
 - **Mapping:** MapStruct
 - **Code Generation:** Lombok
 - **Containerization:** Docker, Docker Compose
-- **Testing:** Spock, ArchUnit, Jacoco
+- **Testing:** Spock controller and service tests
 
 ## Prerequisites
 
@@ -41,25 +41,24 @@ cd ms-scheduler
 
 ### 2. Running the application
 
-There are two ways to run the application:
-
-#### Using Docker Compose (recommended)
-
-This is the easiest way to get the application and its dependencies (PostgreSQL, RabbitMQ) up and running.
+Start PostgreSQL and RabbitMQ with Docker Compose:
 
 ```bash
-docker-compose -f infra/docker-compose.yml up -d
+docker compose -f infra/docker-compose.yml up -d db_scheduler rabbitmq
 ```
 
-The application will be available at `http://localhost:8085`.
-
-#### Using Gradle
-
-If you prefer to run the application without Docker, you can use the Gradle wrapper. You will need to have PostgreSQL and RabbitMQ running separately.
+Compose starts the infrastructure. Run the application separately with the local profile:
 
 ```bash
-./gradlew bootRun
+./gradlew bootRun --args='--spring.profiles.active=local'
 ```
+
+The local profile uses the Compose services and serves the API at `http://localhost:8085`.
+The default profile expects database and RabbitMQ environment variables and uses port 80.
+
+The messaging configuration uses the `ns.scheduler.dx` direct exchange with automatic exchange declaration disabled.
+Create that exchange and bind a consumer queue with the intended routing key before testing message delivery.
+`responseQueueInfo` is carried in the scheduled event; it does not provision broker infrastructure.
 
 ## API Endpoints
 
@@ -82,7 +81,11 @@ The base URL for the API is `/api/schedule-jobs`.
   "jobName": "my-job",
   "jobGroup": "my-group",
   "cronExpression": "0/10 * * * * ?",
-  "data": {
+  "responseQueueInfo": {
+    "exchangeName": "example.responses",
+    "routingKey": "example.response"
+  },
+  "payload": {
     "message": "Hello from the scheduler!"
   }
 }
@@ -94,11 +97,11 @@ The base URL for the API is `/api/schedule-jobs`.
 {
   "jobName": "my-job",
   "jobGroup": "my-group",
-  "action": "PAUSE"
+  "actionType": "PAUSE"
 }
 ```
 
-**Possible values for `action`:** `RUN_ONCE`, `PAUSE`, `RESUME`
+**Possible values for `actionType`:** `RUN_ONCE`, `PAUSE`, `RESUME`
 
 ## Testing
 
@@ -108,4 +111,6 @@ To run the tests, execute the following command:
 ./gradlew test
 ```
 
-This will run all the unit and integration tests and generate a test report in `build/reports/tests/test/index.html`.
+This runs the committed Spock controller and service tests and generates a report in
+`build/reports/tests/test/index.html`. The service tests mock Quartz; they do not establish
+real database persistence, clustered scheduling, or RabbitMQ delivery guarantees.
