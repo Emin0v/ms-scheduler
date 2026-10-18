@@ -1,5 +1,7 @@
 # ms-scheduler
 
+[![CI](https://github.com/Emin0v/ms-scheduler/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Emin0v/ms-scheduler/actions/workflows/ci.yml)
+
 A Spring Boot microservice for scheduling and managing jobs using Quartz.
 
 ## Features
