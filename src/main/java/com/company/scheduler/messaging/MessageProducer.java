@@ -30,6 +30,7 @@ public class MessageProducer {
             log.info("Message sent successfully. Event ID: {}, Routing key: {}", eventId, routingKey);
         } else {
             log.error("Failed to send message. Event ID: {}", eventId);
+            throw new IllegalStateException("Message was not accepted for delivery: " + eventId);
         }
     }
 

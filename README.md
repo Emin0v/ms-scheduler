@@ -114,3 +114,8 @@ To run the tests, execute the following command:
 This runs the committed Spock controller and service tests and generates a report in
 `build/reports/tests/test/index.html`. The service tests mock Quartz; they do not establish
 real database persistence, clustered scheduling, or RabbitMQ delivery guarantees.
+
+Message job tests also exercise accepted/rejected publication and malformed payloads.
+A `false` result from `StreamBridge.send` now fails the Quartz execution rather than being
+logged as a successful job. This reports a failed handoff; it does not establish broker
+confirmation, automatic retries, or exactly-once delivery. CI runs `./gradlew check`.
